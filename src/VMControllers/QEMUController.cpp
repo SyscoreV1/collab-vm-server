@@ -351,8 +351,14 @@ void QEMUController::InitQMP()
 
 void QEMUController::RestoreVMSnapshot()
 {
-	if (qmp_->IsConnected())
-		qmp_->SystemPowerDown();
+		if (internal_state_ == InternalState::kStopping)
+		{
+			IsStopped();
+		}
+		else
+		{
+			StartQEMU();
+		}
 }
 
 void QEMUController::PowerOffVM()
