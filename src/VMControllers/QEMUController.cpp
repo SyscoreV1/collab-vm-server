@@ -351,20 +351,8 @@ void QEMUController::InitQMP()
 
 void QEMUController::RestoreVMSnapshot()
 {
-	if (internal_state_ != InternalState::kConnected && internal_state_ != InternalState::kVNCConnecting)
-		return;
-
-	if (settings_->QEMUSnapshotMode == VMSettings::SnapshotMode::kVMSnapshots && !snapshot_.empty())
-	{
-		if (RestartForSnapshot)
-			StopQEMU();
-		else
-			qmp_->LoadSnapshot(snapshot_, QMPClient::ResultCallback());
-	}
-	else if (settings_->QEMUSnapshotMode == VMSettings::SnapshotMode::kHDSnapshots)
-		StopQEMU();
-	else
-		qmp_->SystemStop();
+	if (qmp_->IsConnected())
+		qmp_->SystemPowerDown();
 }
 
 void QEMUController::PowerOffVM()
